@@ -23,9 +23,4 @@ module.exports = {
     fs: 'empty',
     net: 'empty'
   },
-  optimization: {
-    splitChunks: {
-     chunks: 'all'
-    }
-  }
 };
