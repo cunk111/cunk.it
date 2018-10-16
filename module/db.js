@@ -1,27 +1,12 @@
-const hapi = require('hapi')
-const routes = require('./routing')
-
-const server = hapi.server({
-  // TODO move ton gitignored file
-  port: 3000,
-  host: 'localhost',
-})
-
-const init = async () => {
-  await server.start()
-  await server.register(routes)
-  console.log(`Server running at: ${server.info.uri}`)
-}
-
-process.on('unhandledRejection', (err) => {
-  console.log(err)
-  process.exit(1)
-})
-
-init()
+// import mongodb from 'mongodb'
 
 
-// const { MongoClient } = require('mongodb')
+// export default {
+//   const url = 'mongodb://localhost:27017'
+//   const { MongoClient } = mongodb
+// }
+
+
 // const test = require('assert')
 //
 // // TODO - migrate to ENV
@@ -46,3 +31,26 @@ init()
 //     client.close()
 //   })
 // })
+
+
+const { MongoClient } = require('mongodb')
+// const config = require('../../config.js').config
+
+let _db
+
+module.exports = {
+
+  connectToServer(cb) {
+    MongoClient.connect(config.database, (err, db) => {
+      _db = db
+      return cb(err, db)
+    })
+  },
+  getDb() {
+    return _db
+  },
+  promisedMongo() {
+    // const database = config.test ? config.test_database : config.database
+    return MongoClient.connect(config.database)
+  },
+}

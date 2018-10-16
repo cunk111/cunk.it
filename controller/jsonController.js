@@ -1,16 +1,20 @@
-'use strict';
-
-const db = require('../module/couchbase');
+// const db = require('../module/couchbase');
 
 const jsonController = {
-    getJson(id, callback) {
-        db.get(id, () => {
-            callback();
-        });
-    },
-    postJons(id, body, callback) {
-        db.insert(id, body, callback);
-    },
-};
+  validateJson(raw) {
+    console.log({ raw }, typeof raw)
+    return typeof raw === 'object'
+  },
+  getJson(id, callback) {
+    // console.log('?', id);
+    // db.get(id, () => {
+    //   callback();
+    // });
+  },
+  postJson(id, body, callback) {
+    // console.log('!', id);
+    // db.insert(id, body, callback);
+  },
+}
 
-module.exports = jsonController;
+module.exports = jsonController
