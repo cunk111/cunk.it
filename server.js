@@ -1,3 +1,5 @@
+import { connectToServer } from './modules/db'
+
 const hapi = require('hapi')
 const routes = require('./routing')
 
@@ -20,7 +22,9 @@ process.on('unhandledRejection', (err) => {
 
 init()
 
-
+const test = connectToServer((err, db) => {
+  console.log({ err }, { db })
+})
 // const { MongoClient } = require('mongodb')
 // const test = require('assert')
 //
