@@ -50,6 +50,7 @@ const jsonController = {
       .find({ documentId })
       .toArray()
 
+    // TEST
     return snapList.sort((a, b) => parseInt(a.changeDate, 10) - parseInt(b.changeDate, 10)).pop()
   },
 
