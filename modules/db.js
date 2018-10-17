@@ -5,7 +5,7 @@ let _db
 
 module.exports = {
   connectToServer(cb) {
-    MongoClient.connect(config.db.url, (err, db) => {
+    MongoClient.connect(config.db.url, { useNewUrlParser: true }, (err, db) => {
       _db = db
       return cb(err, db)
     })
