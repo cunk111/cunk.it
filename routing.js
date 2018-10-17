@@ -1,16 +1,7 @@
-// const jsonController = require('./controller/jsonController')
-
-// const {
-//   validateJson,
-//   // getJson,
-//   // postJson,
-// } = require('./controller/jsonController')
-
-
 import {
   validateJson,
-  // getJson,
-  // postJson,
+  getJson,
+  postJson,
 } from './controller/jsonController'
 
 const Joi = require('joi')
@@ -20,7 +11,7 @@ const routing = {
   version: '1.0.0',
   async register(server, options) {
 
-    // NOTE - friendly landing page
+    // NOTE - API QUICK REF
     server.route({
       method: 'GET',
       path: '/',
@@ -31,27 +22,17 @@ const routing = {
       },
     })
 
-    // NOTE - not sure worth keeping
-    server.route({
-      method: 'GET',
-      path: '/json',
-      handler(request, h) {
-        // eslint-disable-next-line
-        const data = 'Bad Request, bad boy! Seems like you wanna get some more of these...json, muright?\nHeres what you can GET:\n\t- GET /json/ for general API documentation\n\t- GET /json/$id to get a known json record'
-        return h.response(data).code(403)
-      },
-    })
-
-    // NOTE - READ DOC
+    // NOTE - READ DOCUMENT
     server.route({
       method: 'GET',
       path: '/json/{id}',
       handler(request, h) {
-        return h.response('ongoing implementing').code(500)
+        return getJson(request.params.id, h)
+        // h.response('ongoing implementing').code(500)
       },
     })
 
-    // NOTE - CREATE DOC
+    // NOTE - CREATE DOCUMENT
     server.route({
       method: 'POST',
       path: '/json',
