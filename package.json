@@ -9,6 +9,7 @@
     "babel-preset-es2015": "^6.24.1",
     "hapi": "^17.5.4",
     "joi": "^13.6.0",
+    "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "mongodb": "^3.1.8"
   },
@@ -39,22 +40,7 @@
     "webpack-cli": "^3.1.0"
   },
   "scripts": {
-    "start": "nodemon server.js --exec babel-node --presets es2015,stage-2",
-    "build": "npm run build-ts && npm run tslint",
-    "serve": "node dist/src/index.js",
-    "watch-node": "nodemon dist/src/index.js",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
-    "test": "jest --forceExit --coverage --verbose",
-    "watch-test": "npm run test -- --watchAll",
-    "build-ts": "tsc",
-    "watch-ts": "tsc -w",
-    "build-sass": "node-sass src/public/css/main.scss dist/public/css/main.css",
-    "watch-sass": "node-sass -w src/public/css/main.scss dist/public/css/main.css",
-    "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "copy-static-assets": "ts-node copyStaticAssets.ts",
-    "debug": "npm run dist && npm run watch-debug",
-    "serve-debug": "nodemon --inspect dist/src/index.js",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
+    "start": "nodemon --inspect server.js --exec babel-node --presets es2015,stage-2"
   },
   "jest": {
     "transform": {

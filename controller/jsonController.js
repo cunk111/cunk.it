@@ -1,67 +1,42 @@
 import { ObjectId } from 'mongodb'
 import m from 'moment'
+// import _ from 'lodash'
 import db from '../modules/db'
 import config from '../config'
 
 const crypto = require('crypto')
 
+// getCommits,
+// checkoutCommit,
+// newCommit,
+
+
+
 const jsonController = {
-  validateJson(raw) {
-    console.log({ raw }, typeof raw)
-    return typeof raw === 'object'
-  },
-
-
-  async getAllJson(req) {
+  async getDocuments(req) {
+    console.log('here')
     const _db = db.getDb()
     const doc = await _db.db(config.db.name)
       .collection('file')
       .find({})
       .toArray()
 
-    console.log(doc)
-    _db.close()
     // TODO - differenciate result / no result
     // TODO - should i return everything ?
     return req.response(doc.map(e => e._id)).code(200)
   },
 
-
-  async getJson(id, req) {
+  async checkoutDocument(id, req) {
     const _db = db.getDb()
     const doc = await _db.db(config.db.name)
       .collection('file')
       .findOne({ _id: ObjectId(id) })
 
-    _db.close()
     // TODO - differenciate result / no result
     return req.response(doc).code(200)
   },
 
-
-  async getLastSnapshop(id) {
-    const _db = db.getDb()
-    const { documentId } = await _db.db(config.db.name)
-      .collection('file')
-      .findOne({ _id: ObjectId(id) })
-
-    const snapList = await _db.db(config.db.name)
-      .collection('file')
-      .find({ documentId })
-      .toArray()
-
-    // TEST
-    return snapList.sort((a, b) => parseInt(a.changeDate, 10) - parseInt(b.changeDate, 10)).pop()
-  },
-
-
-  async getDiff(original, update) {
-    // NOTE - Ha! incremental or differential ?
-    console.log('get diff', { original }, { update })
-  },
-
-
-  async postNewJson(payload, req) {
+  async newDocument(payload, req) {
     const _db = db.getDb()
     const timestamp = m().format('x')
     const data = {
@@ -70,24 +45,91 @@ const jsonController = {
       documentId: crypto.createHmac('sha256', JSON.stringify(payload))
         .update(JSON.stringify(timestamp)).digest('hex'),
     }
-    // console.log({ data })
+
     const res = await _db.db(config.db.name).collection('file').insertOne(data)
 
-    _db.close()
+    // _db.close()
     return req.response(res.ops).code(200)
   },
 
 
-  async postJsonDiff(id, payload, req) {
-    const _db = db.getDb()
-    // console.log('hello?');
-    const lastSnap = await jsonController.getLastSnapshop(id)
-    console.log('post diff', { lastSnap })
-    const diff = await jsonController.getDiff(lastSnap.document, payload)
+  /**
+   * BRANCHES Routes
+   * - getDocuments
+   * - checkoutDocument
+   * - newDocument
+   */
 
-    _db.close()
-    return req.response(lastSnap).code(200)
+  async getCommits() {
+
   },
+
+  async checkoutCommit() {
+
+  },
+
+  async newCommit() {
+
+  }
+
+  // async getLastSnapshop(id) {
+  //   console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+  //   const _db = db.getDb()
+  //
+  //   // BUG - destructuring cannot handle null input
+  //   const snapshot = await _db.db(config.db.name)
+  //     .collection('file')
+  //     .findOne({ _id: ObjectId(id) })
+  //   console.log('snap searched')
+  //   if (!snapshot) {
+  //     console.log('no snap found')
+  //     // TODO notify caller to send error - and abort!
+  //     // _db.close()
+  //     return {
+  //       error: {
+  //         code: 404,
+  //         msg: 'document not found',
+  //       },
+  //     }
+  //   }
+  //   console.log(snapshot)
+  //
+  //   const snapList = await _db.db(config.db.name)
+  //     .collection('file')
+  //     .find({ documentId: snapshot.documentId })
+  //     .toArray()
+  //
+  //   if (snapList.length === 1) {
+  //     console.log('one snap')
+  //     // _db.close()
+  //     return snapList
+  //   }
+  //   console.log('>9k snaps')
+  //   // _db.close()
+  //   return snapList.sort((a, b) => parseInt(a.changeDate, 10) - parseInt(b.changeDate, 10)).pop()
+  // },
+  //
+  //
+  // async getDiff(original, snapshot) {
+  //   console.log('get diff', { original }, { snapshot })
+  //   const lastSnap = this.getLastSnapshop()
+  //   return 'idle'
+  // },
+  //
+  //
+  //
+  //
+  //
+  // async postJsonDiff(id, payload, req) {
+  //   // const _db = db.getDb()
+  //   console.log('hello?')
+  //   const [lastSnap] = await jsonController.getLastSnapshop(id)
+  //   console.log('post diff', { lastSnap })
+  //   const diff = await jsonController.getDiff(lastSnap, payload.document)
+  //   console.log('out of the diff')
+  //   // _db.close()
+  //   return req.response(lastSnap).code(200)
+  // },
 }
 
 module.exports = jsonController

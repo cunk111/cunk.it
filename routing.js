@@ -1,8 +1,15 @@
 import {
-  getAllJson,
-  getJson,
-  postNewJson,
-  postJsonDiff,
+  getDocuments,
+  checkoutDocument,
+  newDocument,
+
+  // getBranches,
+  // checkoutBranch,
+  // newBranch,
+
+  getCommits,
+  checkoutCommit,
+  newCommit,
 } from './controller/jsonController'
 
 const Joi = require('joi')
@@ -11,6 +18,7 @@ const routing = {
   name: 'routing',
   version: '1.0.0',
   async register(server, options) {
+    console.log({ options })
 
     // NOTE - API QUICK REF
     server.route({
@@ -19,30 +27,44 @@ const routing = {
       handler: (request, h) => {
         // TODO - move to a page
         // eslint-disable-next-line
-        const data = 'Hey! Glad you made it here. Now let\'s get to the  basics of this API. You cant GET nothing, you need to GET /json/$something, okay?\n2. You cant POST nothing, you need to POST /json/$something, mmmkay?!'
+        const data = 'Hey! Glad zefffzerzeyou made it here'
         return h.response(data).code(200)
       },
     })
 
-    // NOTE - GET ALL DOCS
+    // NOTE - GET all available docs
     server.route({
       method: 'GET',
-      path: '/json',
-      handler: (request, h) => getAllJson(h),
+      path: '/docs',
+      handler: (request, h) => getDocuments(h),
     })
 
-    // NOTE - READ DOCUMENT
+    // NOTE - checkout on given doc
     server.route({
       method: 'GET',
-      path: '/json/{id}',
-      handler: (request, h) => getJson(request.params.id, h),
+      path: '/doc/{doc_id}',
+      handler: (request, h) => checkoutDocument(h),
     })
 
-    // NOTE - CREATE DOCUMENT
+    // // NOTE - GET all available commits for given doc
+    server.route({
+      method: 'GET',
+      path: '/doc/{doc_id}/commits',
+      handler: (request, h) => getCommits(h),
+    })
+
+    // NOTE - checkout on given commit
+    server.route({
+      method: 'GET',
+      path: '/doc/{doc_id}/commit/{commit_id}',
+      handler: (request, h) => checkoutCommit(request.params.id, h),
+    })
+
+    // NOTE - POST new document
     server.route({
       method: 'POST',
-      path: '/json',
-      handler: (request, h) => postNewJson(request.payload, h),
+      path: '/doc',
+      handler: (request, h) => newDocument(request.payload, h),
       config: {
         validate: {
           payload: Joi.object().required(),
@@ -52,11 +74,11 @@ const routing = {
       },
     })
 
-    // NOTE - UPDATE DOC
+    // NOTE - POST new commit
     server.route({
       method: 'POST',
-      path: '/json/{id}',
-      handler: (request, h) => postJsonDiff(request.params.id, request.payload, h),
+      path: '/commit',
+      handler: (request, h) => newCommit(request.params.id, request.payload, h),
       config: {
         validate: {
           payload: {
